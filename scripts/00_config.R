@@ -12,8 +12,9 @@ dir.create(RAW_DIR, showWarnings = FALSE)
 dir.create(PROCESSED_DIR, showWarnings = FALSE)
 dir.create(RESULTS_DIR, showWarnings = FALSE)
 
-# - dataset
+# - dataset info
 GEO_ACCESSION <- "GSE168859"
+GROUP_LEVELS <- c("healthy", "pretreatment", "posttreatment")
 
 # - key files
 MANIFEST_FILE <- here(PROCESSED_DIR, "gse168859_sample_manifest.csv")
@@ -23,6 +24,8 @@ SEED <- 1
 set.seed(SEED)
 
 # - Seurat defaults
+DEFAULT_MIN_FEATURES <- 200 # ?
+DEFAULT_MAX_MT <- 15 # ?
 
 # - param grid
 #PARAM_GRID <- expand.grid()

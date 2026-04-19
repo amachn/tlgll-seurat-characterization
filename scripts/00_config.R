@@ -13,9 +13,10 @@ dir.create(PROCESSED_DIR, showWarnings = FALSE)
 dir.create(RESULTS_DIR, showWarnings = FALSE)
 
 # - dataset
-ACCESSION <- "GSE168859"
+GEO_ACCESSION <- "GSE168859"
 
 # - key files
+MANIFEST_FILE <- here(PROCESSED_DIR, "gse168859_sample_manifest.csv")
 
 # - reproducibility
 SEED <- 1

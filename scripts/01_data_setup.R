@@ -49,5 +49,17 @@ manifest <- lapply(names(gsm_list), function(gsm_id) {
   )
 
 write_csv(manifest, MANIFEST_FILE)
+message("Manifest saved to: ", MANIFEST_FILE)
 
-# - 2 ~ download supplementary files (raw data)
+# - 2 ~ download and unpack supplementary files (raw data)
+suppressMessages(getGEOSuppFiles(GEO_ACCESSION, baseDir = RAW_DIR))
+
+SUPP_DIR <- here(RAW_DIR, GEO_ACCESSION)
+TAR_FILE <- here(SUPP_DIR, str_c(GEO_ACCESSION, "_RAW.tar"))
+
+if (file.exists(TAR_FILE)) {
+  untar(TAR_FILE, exdir = here(SUPP_DIR, "extracted"))
+}
+
+message("Supplementary files saved to: ", SUPP_DIR)
+message("01_data_setup.R complete.")

@@ -8,10 +8,13 @@ suppressPackageStartupMessages({
   library(tibble)
 })
 
-source(here("scripts", "00_config.R"))
+source(here("scripts", "00_config.R"), local = TRUE)
+cfg <- get_config()
 
 # - 1 ~ download GEO metadata & build manifest
-gsm_list <- suppressMessages(GSMList(getGEO(GEO_ACCESSION, GSEMatrix = FALSE)))
+gsm_list <- suppressMessages(GSMList(
+  getGEO(cfg$GEO_ACCESSION, GSEMatrix = FALSE)
+))
 
 # extract metadata from each GSM and return a vector of tibbles
 manifest <- lapply(names(gsm_list), function(gsm_id) {
@@ -48,18 +51,19 @@ manifest <- lapply(names(gsm_list), function(gsm_id) {
     characteristics
   )
 
-write_csv(manifest, MANIFEST_FILE)
-message("Manifest saved to: ", MANIFEST_FILE)
+write_csv(manifest, cfg$MANIFEST_FILE)
+message("Manifest saved to: ", cfg$MANIFEST_FILE)
 
 # - 2 ~ download and unpack supplementary files (raw data)
-suppressMessages(getGEOSuppFiles(GEO_ACCESSION, baseDir = RAW_DIR))
+suppressMessages(getGEOSuppFiles(cfg$GEO_ACCESSION, baseDir = cfg$RAW_DIR))
+# ^ creates supp_dir by default
 
-SUPP_DIR <- here(RAW_DIR, GEO_ACCESSION)
-TAR_FILE <- here(SUPP_DIR, str_c(GEO_ACCESSION, "_RAW.tar"))
+supp_dir <- here(cfg$RAW_DIR, cfg$GEO_ACCESSION)
+supp_tar_file <- here(supp_dir, str_c(cfg$GEO_ACCESSION, "_RAW.tar"))
 
-if (file.exists(TAR_FILE)) {
-  untar(TAR_FILE, exdir = here(SUPP_DIR, "extracted"))
+if (file.exists(supp_tar_file)) {
+  untar(supp_tar_file, exdir = here(supp_dir, "extracted"))
 }
 
-message("Supplementary files saved to: ", SUPP_DIR)
+message("Supplementary files saved to: ", supp_dir)
 message("01_data_setup.R complete.")

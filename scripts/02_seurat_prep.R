@@ -9,16 +9,17 @@ suppressPackageStartupMessages({
   library(stringr)
 })
 
-source(here("scripts", "00_config.R"))
+source(here("scripts", "00_config.R"), local = TRUE)
+cfg <- get_config()
 
 # - 1 ~ load manifest
-manifest <- read_csv(MANIFEST_FILE, show_col_types = FALSE) |>
+manifest <- read_csv(cfg$MANIFEST_FILE, show_col_types = FALSE) |>
   filter(data_type == "geneexpression")
 
 # - 2 ~ find extracted count files
-EXTRACTED_DIR <- file.path(RAW_DIR, GEO_ACCESSION, "extracted")
+extracted_dir <- file.path(cfg$RAW_DIR, cfg$GEO_ACCESSION, "extracted")
 
-count_files <- list.files(EXTRACTED_DIR, full.names = TRUE)
+count_files <- list.files(extracted_dir, full.names = TRUE)
 file_tbl <- tibble(
   file_path = count_files,
   file_name = basename(count_files),
@@ -28,18 +29,18 @@ file_tbl <- tibble(
 manifest <- manifest |> left_join(file_tbl, by = "gsm")
 
 # ~ output directories
-SAMPLE_OBJ_DIR <- here(PROCESSED_DIR, "sample_objects")
-BATCH_OBJ_DIR <- here(PROCESSED_DIR, "batch_objects")
+sample_obj_dir <- here(cfg$PROCESSED_DIR, "sample_objects")
+batch_obj_dir <- here(cfg$PROCESSED_DIR, "batch_objects")
 
-dir.create(SAMPLE_OBJ_DIR, showWarnings = FALSE)
-dir.create(BATCH_OBJ_DIR, showWarnings = FALSE)
+dir.create(sample_obj_dir, showWarnings = FALSE)
+dir.create(batch_obj_dir, showWarnings = FALSE)
 
 # - 3 ~ build one Seurat obj per sample
 # * will likely take a long time to run (30-60 minutes)
 for (i in seq_len(nrow(manifest))) {
   row <- manifest[i, ]
   
-  out_file <- here(SAMPLE_OBJ_DIR, paste0(row$gsm, ".rds"))
+  out_file <- here(sample_obj_dir, paste0(row$gsm, ".rds"))
   if (file.exists(out_file)) {
     next
   }
@@ -49,15 +50,15 @@ for (i in seq_len(nrow(manifest))) {
     Matrix(sparse = TRUE)
   
   obj <- suppressWarnings(CreateSeuratObject(
-    counts = counts, 
+    counts = counts,
     project = "T-LGLL",
-    min.features = DEFAULT_MIN_FEATURES
+    min.features = cfg$DEFAULT_MIN_FEATURES
   )) |>
     RenameCells(add.cell.id = row$gsm)
     
   obj$gsm <- row$gsm
   obj$subject_id <- row$subject_id
-  obj$group <- factor(row$group, levels = GROUP_LEVELS)
+  obj$group <- factor(row$group, levels = cfg$GROUP_LEVELS)
   obj$title <- row$title
   
   Idents(obj) <- "gsm"
@@ -69,7 +70,7 @@ for (i in seq_len(nrow(manifest))) {
 }
 
 # - 4 ~ merge Seurat objects in batches
-sample_obj_files <- list.files(SAMPLE_OBJ_DIR, full.names = TRUE)
+sample_obj_files <- list.files(sample_obj_dir, full.names = TRUE)
 
 batch_size <- 4
 batch_ids <- split(
@@ -79,21 +80,21 @@ batch_ids <- split(
 
 batch_files <- character(length(batch_ids))
 
-for (b in seq_along(batch_ids)) {
-  batch_file <- here(BATCH_OBJ_DIR, paste0("batch_", b, ".rds"))
+for (batch in seq_along(batch_ids)) {
+  batch_file <- here(batch_obj_dir, paste0("batch_", batch, ".rds"))
   if (file.exists(batch_file)) {
-    batch_files[b] <- batch_file
+    batch_files[batch] <- batch_file
     next
   }
   
-  message(paste0("Building batch ", b, "/", length(batch_ids)))
-  idx <- batch_ids[[b]]
+  message(paste0("Building batch ", batch, "/", length(batch_ids)))
+  idx <- batch_ids[[batch]]
   objs <- lapply(sample_obj_files[idx], readRDS)
   
   batch_obj <- Reduce(function(x, y) merge(x, y, merge.data = FALSE), objs)
   
   saveRDS(batch_obj, batch_file)
-  batch_files[b] <- batch_file
+  batch_files[batch] <- batch_file
   
   rm(objs, batch_obj)
   gc()
@@ -111,7 +112,7 @@ gc()
 merged_obj <- JoinLayers(merged_obj, assay = "RNA") # join split count layers
 Idents(merged_obj) <- "group" # group as active.ident going forward
 
-saveRDS(merged_obj, MERGED_SEURAT_FILE)
+saveRDS(merged_obj, cfg$MERGED_SEURAT_FILE)
 
-message("Merged Seurat object saved to: ", MERGED_SEURAT_FILE)
+message("Merged Seurat object saved to: ", cfg$MERGED_SEURAT_FILE)
 message("02_seurat_prep.R complete.")

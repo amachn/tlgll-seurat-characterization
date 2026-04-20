@@ -18,6 +18,7 @@ GROUP_LEVELS <- c("healthy", "pretreatment", "posttreatment")
 
 # - key files
 MANIFEST_FILE <- here(PROCESSED_DIR, "gse168859_sample_manifest.csv")
+MERGED_SEURAT_FILE <- here(PROCESSED_DIR, "tlgl_merged_seurat.rds")
 
 # - reproducibility
 SEED <- 1

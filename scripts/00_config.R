@@ -18,7 +18,8 @@ get_config <- function() {
     
     # - Seurat defaults
     DEFAULT_MIN_FEATURES = 200,
-    DEFAULT_MAX_MT = 15,
+    DEFAULT_MAX_FEATURES = 2500,
+    DEFAULT_MAX_MT = 10,
     
     # - param grid
     PARAM_GRID = expand.grid()

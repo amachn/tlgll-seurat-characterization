@@ -68,6 +68,7 @@ for (i in seq_len(nrow(manifest))) {
   median_mt_before <- median(obj$percent.mt)
   
   # QC filtering (implement adaptive QC filtering if time allows)
+  # https://bioconductor.org/books/3.17/OSCA.basic/quality-control.html#quality-control-outlier
   obj <- subset(
     obj,
     subset = 

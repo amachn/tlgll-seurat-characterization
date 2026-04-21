@@ -3,7 +3,6 @@ suppressPackageStartupMessages({
   library(Seurat)
   library(dplyr)
   library(here)
-  library(readr)
 })
 
 source(here("scripts", "00_config.R"), local = TRUE)

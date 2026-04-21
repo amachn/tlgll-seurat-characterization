@@ -33,10 +33,10 @@ manifest <- lapply(names(gsm_list), function(gsm_id) {
       str_extract(title, "Healthy|pretreatment|posttreatment")),
     is_healthy = group == "healthy",
     is_patient = group != "healthy",
-    use_baseline = data_type == "geneexpression" & group %in% c(
-      "healthy", "pretreatment"),
-    use_treatment = data_type == "geneexpression" & group %in% c(
-      "pretreatment", "posttreatment")
+    use_baseline = data_type == "geneexpression" & 
+      group %in% cfg$BASELINE_GROUP,
+    use_treatment = data_type == "geneexpression" & 
+      group %in% cfg$TREATMENT_GROUP
   ) |>
   select( # rearrange columns 
     gsm,

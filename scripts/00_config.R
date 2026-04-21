@@ -12,6 +12,8 @@ get_config <- function() {
     # - dataset info
     GEO_ACCESSION = "GSE168859",
     GROUP_LEVELS = c("healthy", "pretreatment", "posttreatment"),
+    BASELINE_GROUP = c("healthy", "pretreatment"),
+    TREATMENT_GROUP = c("pretreatment", "posttreatment"),
   
     # - reproducibility
     SEED = 1,

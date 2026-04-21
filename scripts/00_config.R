@@ -30,6 +30,8 @@ get_config <- function() {
   # - key files
   cfg$MANIFEST_FILE <- here(cfg$PROCESSED_DIR, "gse168859_sample_manifest.csv")
   cfg$MERGED_SEURAT_FILE <- here(cfg$PROCESSED_DIR, "tlgll_merged_seurat.rds")
+  cfg$BASELINE_SEURAT_FILE <- here(cfg$PROCESSED_DIR, "tlgll_baseline_seurat.rds")
+  cfg$TREATMENT_SEURAT_FILE <- here(cfg$PROCESSED_DIR, "tlgll_treatment_seurat.rds")
   
   # - create directories if missing
   dir.create(cfg$DATA_DIR, showWarnings = FALSE)

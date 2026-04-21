@@ -11,7 +11,7 @@ suppressPackageStartupMessages({
 source(here("scripts", "00_config.R"), local = TRUE)
 cfg <- get_config()
 
-# - 1 ~ download GEO metadata & build manifest
+# - download GEO metadata & build manifest -
 gsm_list <- suppressMessages(GSMList(
   getGEO(cfg$GEO_ACCESSION, GSEMatrix = FALSE)
 ))
@@ -54,7 +54,7 @@ manifest <- lapply(names(gsm_list), function(gsm_id) {
 write_csv(manifest, cfg$MANIFEST_FILE)
 message("Manifest saved to: ", cfg$MANIFEST_FILE)
 
-# - 2 ~ download and unpack supplementary files (raw data)
+# - download and unpack supplementary files (raw data) -
 suppressMessages(getGEOSuppFiles(cfg$GEO_ACCESSION, baseDir = cfg$RAW_DIR))
 # ^ creates supp_dir by default
 

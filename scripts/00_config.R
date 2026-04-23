@@ -23,8 +23,18 @@ get_config <- function() {
     DEFAULT_MAX_FEATURES = 2500,
     DEFAULT_MAX_MT = 10,
     
+    DEFAULT_NPCS = 20, 
+    DEFAULT_K_PARAM = 20,
+    DEFAULT_RESOLUTION = 0.5,
+    DEFAULT_PERPLEXITY = 30,
+    
     # - param grid
-    PARAM_GRID = expand.grid()
+    PARAM_GRID = expand.grid(
+      npcs = c(10, 20, 30),
+      k.param = c(10, 20, 30),
+      resolution = c(0.2, 0.5, 0.8),
+      perplexity = c(20, 30, 50)
+    )
   )
   
   # - key files

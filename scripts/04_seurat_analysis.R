@@ -7,6 +7,7 @@ suppressPackageStartupMessages({
   library(msigdbr)
   library(purrr)
   library(readr)
+  library(stringr)
 })
 
 source(here("scripts", "00_config.R"), local = TRUE)
@@ -193,9 +194,15 @@ analyze_dataset <- function(obj_file, name) {
       ", res=", p$resolution, "]"
     )
     
+    start.time <- Sys.time()
     results[[i]] <- run_setting(
       obj, name, p$npcs, p$k.param, p$resolution
     )
+    end.time <- Sys.time()
+    
+    measured <- end.time - start.time
+    message(str_to_title(name), " setting ", i, "/", n_param_sets, 
+            " complete in ", round(measured, 2), " ", units(measured), ".")
     
     gc()
   }

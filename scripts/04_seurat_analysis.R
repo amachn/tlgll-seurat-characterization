@@ -60,7 +60,7 @@ preprocess <- function(obj) {
 
 compute_cluster_entropy <- function(cluster_labels) {
   counts <- table(cluster_labels) # count cells in cluster
-  props <- count / sum(counts) # convert to proportions
+  props <- counts / sum(counts) # convert to proportions
   -sum(props * log(props)) # compute Shannon entropy
 }
 

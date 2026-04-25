@@ -111,9 +111,9 @@ add_program_scores <- function(obj) {
   obj
 }
 
-run_setting <- function(obj, name, npcs, resolution) {
+run_setting <- function(obj, name, npcs, k.param, resolution) {
   obj <- FindNeighbors(
-      obj, dims = seq_len(npcs), k.param = 20, verbose = FALSE
+      obj, dims = seq_len(npcs), k.param = k.param, verbose = FALSE
     ) |> FindClusters(
       resolution = resolution, random.seed = cfg$SEED, verbose = FALSE
     ) 
@@ -127,6 +127,7 @@ run_setting <- function(obj, name, npcs, resolution) {
   summary_tbl <- tibble(
     dataset = name,
     npcs = npcs,
+    k.param = k.param,
     resolution = resolution,
     n_cells = ncol(obj),
     n_clusters = n_distinct(Idents(obj)),
@@ -188,11 +189,12 @@ analyze_dataset <- function(obj_file, name) {
     message(
       "Running ", name, " setting ", i, "/", n_param_sets,
       " [npcs=", p$npcs,
+      ", k=", p$k.param,
       ", res=", p$resolution, "]"
     )
     
     results[[i]] <- run_setting(
-      obj, name, p$npcs, p$resolution
+      obj, name, p$npcs, p$k.param, p$resolution
     )
     
     gc()

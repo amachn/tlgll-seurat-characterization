@@ -31,7 +31,7 @@ get_config <- function() {
     # - param grid
     PARAM_GRID = expand.grid(
       npcs = c(10, 20, 30),
-      # k.param = c(10, 20, 30),
+      k.param = c(10, 20, 30),
       resolution = c(0.2, 0.5, 0.8)
       # perplexity = c(20, 30, 50)
     )

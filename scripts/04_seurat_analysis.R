@@ -14,16 +14,13 @@ source(here("scripts", "00_config.R"), local = TRUE)
 cfg <- get_config()
 
 # - paths -
-analysis_table_dir <- here(cfg$RESULTS_DIR, "analysis_tables")
-dir.create(analysis_table_dir, showWarnings = FALSE)
+baseline_summary_file <- here(cfg$TABLES_DIR, "baseline_summary.csv")
+baseline_cluster_file <- here(cfg$TABLES_DIR, "baseline_cluster_summary.csv")
+baseline_module_file <- here(cfg$TABLES_DIR, "baseline_group_module_scores.csv")
 
-baseline_summary_file <- here(analysis_table_dir, "baseline_summary.csv")
-baseline_cluster_file <- here(analysis_table_dir, "baseline_cluster_summary.csv")
-baseline_module_file <- here(analysis_table_dir, "baseline_group_module_scores.csv")
-
-treatment_summary_file <- here(analysis_table_dir, "treatment_summary.csv")
-treatment_cluster_file <- here(analysis_table_dir, "treatment_cluster_summary.csv")
-treatment_module_file <- here(analysis_table_dir, "treatment_group_module_scores.csv")
+treatment_summary_file <- here(cfg$TABLES_DIR, "treatment_summary.csv")
+treatment_cluster_file <- here(cfg$TABLES_DIR, "treatment_cluster_summary.csv")
+treatment_module_file <- here(cfg$TABLES_DIR, "treatment_group_module_scores.csv")
 
 # - parameters - 
 param_grid <- as_tibble(cfg$PARAM_GRID)
@@ -155,6 +152,15 @@ run_setting <- function(obj, name, npcs, k.param, resolution) {
           .groups = "drop"
         ),
       by = "cluster"
+    ) |>
+    mutate(
+      dataset = name,
+      npcs = npcs,
+      k.param = k.param,
+      resolution = resolution
+    ) |>
+    select(
+      dataset, npcs, k.param, resolution, group, cluster, everything()
     )
   
   list(

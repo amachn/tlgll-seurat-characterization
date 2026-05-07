@@ -7,7 +7,10 @@ get_config <- function() {
     DATA_DIR = here("data"),
     RAW_DIR = here("data", "raw"),
     PROCESSED_DIR = here("data", "processed"),
+    
     RESULTS_DIR = here("results"),
+    TABLES_DIR = here("results", "tables"),
+    FIGURES_DIR = here("results", "figures"),
     
     # - dataset info
     GEO_ACCESSION = "GSE168859",
@@ -47,7 +50,10 @@ get_config <- function() {
   dir.create(cfg$DATA_DIR, showWarnings = FALSE)
   dir.create(cfg$RAW_DIR, showWarnings = FALSE)
   dir.create(cfg$PROCESSED_DIR, showWarnings = FALSE)
+  
   dir.create(cfg$RESULTS_DIR, showWarnings = FALSE)
+  dir.create(cfg$TABLES_DIR, showWarnings = FALSE)
+  dir.create(cfg$FIGURES_DIR, showWarnings = FALSE)
   
   # - apply seed
   set.seed(cfg$SEED)
